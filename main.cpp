@@ -12,6 +12,7 @@
 #include <vector>
 #include <map>
 #include <numeric>
+#include <algorithm>
 using namespace std;
 
 float getIC(vector<char>& seq){
@@ -34,7 +35,7 @@ float getIC(vector<char>& seq){
     for (char& a : vectAlph){
         freqsum += freq[a] * (freq[a]-1);
     }
-    IC=freqsum/(N*(N-1));
+    IC=freqsum/((N*(N-1))/vectAlph.size());
     return IC;
 }
 
@@ -82,7 +83,7 @@ int getKeyLength(const string& cipherText){
     for (auto a:avgIC){
         cout <<a <<endl;
     }
-    return 0;
+    return max_element(avgIC.begin(),avgIC.end()) - avgIC.begin()+1;
 }
 int main(int argc, const char * argv[]) {
     cout << "Cyphertext: ";//Prompts user for the ciphertext to be decrpyted
@@ -90,6 +91,7 @@ int main(int argc, const char * argv[]) {
     getline(cin,input);
     cout <<input<<endl;
     int keyLength=getKeyLength(input);
+    cout <<"Key Length is: " <<keyLength <<endl;
     
     return 0;
 }
