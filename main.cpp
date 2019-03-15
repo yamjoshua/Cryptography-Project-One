@@ -12,8 +12,27 @@
 #include <vector>
 #include <map>
 #include <numeric>
+#include <fstream>
 #include <algorithm>
 using namespace std;
+
+vector<int> frequencyCounter(vector<char> total, int pos) {
+    // frequency vectors are [0,a,..,z]
+    vector<int> frequency(27);
+    int ascii;
+    for (int j = pos; j < (pos+500); j++) {
+        ascii = int(total[j]);
+        cout << total[j];
+        if (total[j] == ' ') {
+            frequency[0]++;
+        }
+        else {
+            frequency[ascii - 96]++;
+        }
+    }
+    cout << '\n';
+    return frequency;
+}
 
 float getIC(vector<char>& seq){
     int N = seq.size(); //Size of Alphabet
@@ -28,10 +47,7 @@ float getIC(vector<char>& seq){
     for ( int i = 0; i < seq.size(); i++ ){
         freq[ seq[i] ] ++;
     }
-    for(auto elem : freq)
-    {
-        std::cout << elem.first << " " <<elem.second<< "\n";
-    }
+   
     for (char& a : vectAlph){
         freqsum += freq[a] * (freq[a]-1);
     }
@@ -63,33 +79,56 @@ int getKeyLength(const string& cipherText){
         aKey.clear();
     }
     //////////////////////////////////////////////////TEST
-    int count = 1;
-    for( vector<vector<vector<char>>>::const_iterator i = manyKeys.begin(); i != manyKeys.end(); ++i)
-    {
-        cout << "Key Length: " << count<<endl;
-        for( vector<vector<char>>::const_iterator j = i->begin(); j != i->end(); ++j)
-        {
-            cout<<"\t";
-            for( vector<char>::const_iterator k = j->begin(); k != j->end(); ++k)
-            {
-                cout<<*k << ' ';
-            }
-            cout <<endl;
-        }
-        count++;
-    }
+//    int count = 1;
+//    for( vector<vector<vector<char>>>::const_iterator i = manyKeys.begin(); i != manyKeys.end(); ++i)
+//    {
+//        cout << "Key Length: " << count<<endl;
+//        for( vector<vector<char>>::const_iterator j = i->begin(); j != i->end(); ++j)
+//        {
+//            cout<<"\t";
+//            for( vector<char>::const_iterator k = j->begin(); k != j->end(); ++k)
+//            {
+//                cout<<*k << ' ';
+//            }
+//            cout <<endl;
+//        }
+//        count++;
+//    }
     /////////////////////////////////////////////
     
-    for (auto a:avgIC){
-        cout <<a <<endl;
-    }
+//    for (auto a:avgIC){
+//        cout <<a <<endl;
+//    }
     return max_element(avgIC.begin(),avgIC.end()) - avgIC.begin()+1;
 }
 int main(int argc, const char * argv[]) {
+    ifstream ifs("dictionary.txt");
+    if (!ifs) {
+        cerr << "Couldn't open 'dictionary.txt'\n";
+        exit(1);
+    }
+    
+    vector<char> temp;
+    char x;
+    while (ifs >> noskipws >> x) {
+        temp.push_back(x);
+    }
+    cout << endl;
+    
+    // each vector contains the frequency of each char
+    vector<int> plainText1 = frequencyCounter(temp, 0);
+    vector<int> plainText2 = frequencyCounter(temp, 501);
+    vector<int> plainText3 = frequencyCounter(temp, 1002);
+    vector<int> plainText4 = frequencyCounter(temp, 1503);
+    vector<int> plainText5 = frequencyCounter(temp, 2004);
+    
+    for (int k = 1; k < plainText1.size(); k++) {
+        cout << char(k+96) << ' ' << plainText1[k] << '\n';
+    }
+
     cout << "Cyphertext: ";//Prompts user for the ciphertext to be decrpyted
     string input;
     getline(cin,input);
-    cout <<input<<endl;
     int keyLength=getKeyLength(input);
     cout <<"Key Length is: " <<keyLength <<endl;
     
