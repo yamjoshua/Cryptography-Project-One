@@ -15,15 +15,21 @@
 using namespace std;
 
 float getIC(vector<char>& seq){
-    int N = 27; //Size of Alphabet
+    int N = seq.size(); //Size of Alphabet
     map<char, int> freq; //Frequency of each letter in a sequence
     static const char* alph = " abcdefghijklmnopqrstuvwxyz";
     vector<char> vectAlph(alph, alph+27);
     float freqsum = 0.0;
     float IC;
-    
+    for ( int i = 0; i < vectAlph.size(); i++ ){
+        freq[ vectAlph[i]]=0;
+    }
     for ( int i = 0; i < seq.size(); i++ ){
         freq[ seq[i] ] ++;
+    }
+    for(auto elem : freq)
+    {
+        std::cout << elem.first << " " <<elem.second<< "\n";
     }
     for (char& a : vectAlph){
         freqsum += freq[a] * (freq[a]-1);
@@ -39,7 +45,7 @@ int getKeyLength(const string& cipherText){
     vector<char> seq; //One Sequence
     vector<float> avgIC; //Avg Index of Coincidence for each possible Key Length
     vector<float> individualIC; //Index of Coincidence for each Sequence
-    int counter=2;
+    int counter=26;
     
     for (int i =1; i<=counter;i++){
         for (int j =0; j<i;j++){
